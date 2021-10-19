@@ -50,11 +50,7 @@
             </div>
           </div>
     <!--        单独歌词部分-->
-          <scroll
-            class="middle-r"
-            :style="middleRStyle"
-            ref="lyricScrollRef"
-          >
+          <scroll class="middle-r" ref="lyricScrollRef" :style="middleRStyle">
             <div class="lyric-wrapper">
               <div v-if="currentLyric" ref="lyricListRef">
                 <p

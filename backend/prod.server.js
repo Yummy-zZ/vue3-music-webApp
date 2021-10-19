@@ -4,7 +4,7 @@ const cookieParser = require('cookie-parser')
 const csrf = require('xsrf')
 const registerRouter = require('./router')
 
-const port = process.env.PORT || 22
+const port = process.env.PORT || 8080
 
 const app = express()
 
