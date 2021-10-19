@@ -1,7 +1,7 @@
 <template>
   <div class="header">
     <span class="icon"></span>
-    <h1 class="text">Chicken Music</h1>
+    <h1 class="text">YumMusic</h1>
     <router-link class="mine" to="/user">
       <i class="icon-mine"></i>
     </router-link>
@@ -22,7 +22,7 @@
     font-size: 0;
     .icon {
       display: inline-block;
-      vertical-align: top;
+      vertical-align: top; // 行内元素对齐方式
       margin-top: 6px;
       width: 30px;
       height: 32px;
@@ -42,7 +42,7 @@
       right: 0;
       .icon-mine {
         display: block;
-        padding: 12px;
+        padding: 10px;
         font-size: $font-size-large-x;
         color: $color-theme;
       }

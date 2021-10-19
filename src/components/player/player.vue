@@ -1,22 +1,20 @@
 <template>
-  <div
-    class="player"
-    v-show="playlist.length"
-  >
-    <transition
-      name="normal"
-      @enter="enter"
-      @after-enter="afterEnter"
-      @leave="leave"
-      @after-leave="afterLeave"
+  <div class="player" v-show="playlist.length">
+    <transition name="normal"
+                @enter="enter"
+                @after-enter="afterEnter"
+                @leave="leave"
+                @after-leave="afterLeave"
     >
       <div
         class="normal-player"
         v-show="fullScreen"
       >
+  <!--      歌曲背景-->
         <div class="background">
           <img :src="currentSong.pic">
         </div>
+  <!--      歌曲顶部栏-->
         <div class="top">
           <div
             class="back"
@@ -27,23 +25,17 @@
           <h1 class="title">{{currentSong.name}}</h1>
           <h2 class="subtitle">{{currentSong.singer}}</h2>
         </div>
-        <div
-          class="middle"
-          @touchstart.prevent="onMiddleTouchStart"
-          @touchmove.prevent="onMiddleTouchMove"
-          @touchend.prevent="onMiddleTouchEnd"
+  <!--      歌曲中部-->
+        <div class="middle"
+             @touchstart.prevent="onMiddleTouchStart"
+             @touchmove.prevent="onMiddleTouchMove"
+             @touchend.prevent="onMiddleTouchEnd"
         >
-          <div
-            class="middle-l"
-            :style="middleLStyle"
-          >
-            <div
-              ref="cdWrapperRef"
-              class="cd-wrapper"
-            >
-              <div
-                ref="cdRef"
-                class="cd"
+          <div class="middle-l" :style="middleLStyle">
+    <!--          CD-->
+            <div class="cd-wrapper" ref="cdWrapperRef">
+              <div class="cd"
+                   ref="cdRef"
               >
                 <img
                   ref="cdImageRef"
@@ -52,14 +44,16 @@
                   :src="currentSong.pic">
               </div>
             </div>
+    <!--          cd下歌词-->
             <div class="playing-lyric-wrapper">
               <div class="playing-lyric">{{playingLyric}}</div>
             </div>
           </div>
+    <!--        单独歌词部分-->
           <scroll
             class="middle-r"
-            ref="lyricScrollRef"
             :style="middleRStyle"
+            ref="lyricScrollRef"
           >
             <div class="lyric-wrapper">
               <div v-if="currentLyric" ref="lyricListRef">
@@ -78,61 +72,76 @@
             </div>
           </scroll>
         </div>
+  <!--      歌曲底部栏-->
         <div class="bottom">
+    <!--        歌词切换的点-->
           <div class="dot-wrapper">
             <span class="dot" :class="{'active':currentShow==='cd'}"></span>
             <span class="dot" :class="{'active':currentShow==='lyric'}"></span>
           </div>
+    <!--          进度条-->
           <div class="progress-wrapper">
             <span class="time time-l">{{formatTime(currentTime)}}</span>
             <div class="progress-bar-wrapper">
-              <progress-bar
-                ref="barRef"
-                :progress="progress"
-                @progress-changing="onProgressChanging"
-                @progress-changed="onProgressChanged"
+              <progress-bar :progress="progress"
+                            @progress-changing="onProgressChanging"
+                            @progress-changed="onProgressChanged"
+                            ref="progressBarRef"
               ></progress-bar>
             </div>
             <span class="time time-r">{{formatTime(currentSong.duration)}}</span>
           </div>
           <div class="operators">
+    <!--          播放模式-->
             <div class="icon i-left">
-              <i @click="changeMode" :class="modeIcon"></i>
+              <i
+                 @click="changeMode"
+                 :class="modeIcon"
+              ></i>
             </div>
+    <!--          上一首-->
             <div class="icon i-left" :class="disableCls">
-              <i @click="prev" class="icon-prev"></i>
+              <i @click="prevSong" class="icon-prev"></i>
             </div>
+    <!--          播放/暂停-->
             <div class="icon i-center" :class="disableCls">
               <i @click="togglePlay" :class="playIcon"></i>
             </div>
+    <!--          下一首-->
             <div class="icon i-right" :class="disableCls">
-              <i @click="next" class="icon-next"></i>
+              <i @click="nextSong" class="icon-next"></i>
             </div>
+    <!--          我喜欢-->
             <div class="icon i-right">
-              <i @click="toggleFavorite(currentSong)" :class="getFavoriteIcon(currentSong)"></i>
+              <i @click="toggleFavorite(currentSong)"
+                 :class="getFavoriteIcon(currentSong)"></i>
             </div>
           </div>
         </div>
       </div>
     </transition>
-    <mini-player
-      :progress="progress"
-      :toggle-play="togglePlay"
+    <!--    迷你播放器-->
+    <mini-player :progress="progress"
+                 :togglePlay="togglePlay"
     ></mini-player>
-    <audio
-      ref="audioRef"
-      @pause="pause"
-      @canplay="ready"
-      @error="error"
-      @timeupdate="updateTime"
-      @ended="end"
+<!--    播放器-->
+    <audio ref="audioRef"
+           @pause="pause"
+           @canplay="ready"
+           @error="error"
+           @timeupdate="updateTime"
+           @ended="songEnd"
     ></audio>
   </div>
 </template>
 
 <script>
   import { useStore } from 'vuex'
-  import { computed, watch, ref, nextTick } from 'vue'
+  import { computed, nextTick, ref, watch } from 'vue'
+  import { PLAY_MODE } from '../../assets/js/constant'
+  // 辅助模块
+  import { formatTime } from '../../assets/js/util'
+  // hooks导入
   import useMode from './use-mode'
   import useFavorite from './use-favorite'
   import useCd from './use-cd'
@@ -140,81 +149,63 @@
   import useMiddleInteractive from './use-middle-interactive'
   import useAnimation from './use-animation'
   import usePlayHistory from './use-play-history'
-  import ProgressBar from './progress-bar'
-  import Scroll from '@/components/base/scroll/scroll'
-  import MiniPlayer from './mini-player'
-  import { formatTime } from '@/assets/js/util'
-  import { PLAY_MODE } from '@/assets/js/constant'
+  // 组件导入
+  import ProgressBar from './components/progress-bar'
+  import Scroll from '../base/scroll/scroll'
+  import miniPlayer from './mini-player'
 
   export default {
     name: 'player',
     components: {
-      MiniPlayer,
       ProgressBar,
-      Scroll
+      Scroll,
+      miniPlayer
     },
     setup() {
+      const store = useStore() // 组合式API使用store方式
+// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+      // 非响应式data
+      let progressChanging = false // 是否正在拖动
+// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
       // data
-      const audioRef = ref(null)
-      const barRef = ref(null)
-      const songReady = ref(false)
-      const currentTime = ref(0)
-      let progressChanging = false
-
-      // vuex
-      const store = useStore()
-      const fullScreen = computed(() => store.state.fullScreen)
-      const currentSong = computed(() => store.getters.currentSong)
-      const playing = computed(() => store.state.playing)
-      const currentIndex = computed(() => store.state.currentIndex)
-      const playMode = computed(() => store.state.playMode)
-
+      const audioRef = ref(null) // 播放器ref
+      const songReady = ref(false) // 歌曲是否缓存好了
+      const currentTime = ref(null) // 目前播放时间
+      const progressBarRef = ref(null)
+// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+      // computed
+      const fullScreen = computed(() => store.state.fullScreen) // 计算是否全屏
+      const currentSong = computed(() => store.getters.currentSong) // 计算当前歌曲
+      const playing = computed(() => store.state.playing) // 计算是否正在播放
+      const playIcon = computed(() => playing.value ? 'icon-pause' : 'icon-play') // 计算暂停和播放按钮的样式
+      const currentIndex = computed(() => store.state.currentIndex) // 当前歌曲索引
+      const playlist = computed(() => store.state.playlist) // 歌曲列表
+      const disableCls = computed(() => songReady.value ? '' : 'disable') // 未缓存时的样式
+      const progress = computed(() => currentTime.value / currentSong.value.duration) // 歌曲当前时间戳,duration是歌曲长度s
+// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
       // hooks
-      const { modeIcon, changeMode } = useMode()
+      const { modeIcon, changeMode } = useMode() // 改变播放模式
       const { getFavoriteIcon, toggleFavorite } = useFavorite()
-      const { cdCls, cdRef, cdImageRef } = useCd()
-      const { currentLyric, currentLineNum, pureMusicLyric, playingLyric, lyricScrollRef, lyricListRef, playLyric, stopLyric } = useLyric({
-        songReady,
-        currentTime
-      })
+      const { cdCls, cdRef, cdImageRef } = useCd() // cd样式动态变化
+      const { currentLyric, currentLineNum, playLyric, lyricScrollRef, playingLyric, lyricListRef, stopLyric, pureMusicLyric } =
+        useLyric({ songReady, currentTime }) // 歌词
       const { currentShow, middleLStyle, middleRStyle, onMiddleTouchStart, onMiddleTouchMove, onMiddleTouchEnd } = useMiddleInteractive()
       const { cdWrapperRef, enter, afterEnter, leave, afterLeave } = useAnimation()
       const { savePlay } = usePlayHistory()
-
-      // computed
-      const playlist = computed(() => store.state.playlist)
-
-      const playIcon = computed(() => {
-        return playing.value ? 'icon-pause' : 'icon-play'
-      })
-
-      const progress = computed(() => {
-        return currentTime.value / currentSong.value.duration
-      })
-
-      const disableCls = computed(() => {
-        return songReady.value ? '' : 'disable'
-      })
-
+// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
       // watch
-      watch(currentSong, (newSong) => {
-        if (!newSong.id || !newSong.url) {
-          return
-        }
-        currentTime.value = 0
-        songReady.value = false
-        const audioEl = audioRef.value
-        audioEl.src = newSong.url
-        audioEl.play()
+      watch(currentSong, (newSong) => { // 获取当前歌曲
+        if (!newSong.id || !newSong.url) return // 歌曲不存在返回
+        songReady.value = false // 歌曲变化需要缓冲
+        const audioEl = audioRef.value // 拿到当前歌曲元素
+        audioEl.src = newSong.url // 歌曲的url赋值给audio
+        audioEl.play() // 播放
         store.commit('setPlayingState', true)
       })
-
-      watch(playing, (newPlaying) => {
-        if (!songReady.value) {
-          return
-        }
-        const audioEl = audioRef.value
-        if (newPlaying) {
+      watch(playing, (isPlaying) => {
+        if (!songReady.value) return // 如果歌曲还未缓冲则返回
+        const audioEl = audioRef.value // 拿到播放器的元素
+        if (isPlaying) { // 歌词暂停与否
           audioEl.play()
           playLyric()
         } else {
@@ -222,154 +213,82 @@
           stopLyric()
         }
       })
-
-      watch(fullScreen, async (newFullScreen) => {
-        if (newFullScreen) {
-          await nextTick()
-          barRef.value.setOffset(progress.value)
+      watch(fullScreen, async (newFull) => { // 全屏更新进度条
+        await nextTick()
+        console.log(progressBarRef)
+        if (newFull) {
+          progressBarRef.value.setOffset(progress.value)
         }
       })
-
+// —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
       // methods
-      function goBack() {
+      function goBack() { // 退出全屏
         store.commit('setFullScreen', false)
       }
-
-      function togglePlay() {
-        if (!songReady.value) {
-          return
-        }
+      function togglePlay() { // 播放和暂停
+        if (!songReady.value) return // 歌曲列表长度为0 返回
         store.commit('setPlayingState', !playing.value)
       }
-
-      function pause() {
+      function pause() { // 当休眠时歌曲自动暂停需要将playing修改为false
         store.commit('setPlayingState', false)
       }
-
-      function prev() {
-        const list = playlist.value
-        if (!songReady.value || !list.length) {
-          return
-        }
-
-        if (list.length === 1) {
-          loop()
-        } else {
-          let index = currentIndex.value - 1
-          if (index === -1) {
-            index = list.length - 1
-          }
-          store.commit('setCurrentIndex', index)
-        }
+      function prevSong() { // 切换上一首歌
+        let index = currentIndex.value // 当前歌曲索引值
+        const listLength = playlist.value.length // 当前歌曲长度
+        if (!songReady.value || !listLength) return // 歌曲列表长度为0 返回
+        index-- // 上一首
+        if (index < 0) index = listLength - 1 // 第一首退回到最后一首
+        if (!playing.value) store.commit('setPlayingState', true) // 切换上一首自动播放
+        store.commit('setCurrentIndex', index)
       }
-
-      function next() {
-        const list = playlist.value
-        if (!songReady.value || !list.length) {
-          return
-        }
-
-        if (list.length === 1) {
-          loop()
-        } else {
-          let index = currentIndex.value + 1
-          if (index === list.length) {
-            index = 0
-          }
-          store.commit('setCurrentIndex', index)
-        }
+      function nextSong() { // 切换下一首歌
+        let index = currentIndex.value // 当前歌曲索引值
+        const listLength = playlist.value.length // 歌曲列表长度
+        if (!songReady.value || !listLength) return // 歌曲列表长度为0 返回
+        index++ // 下一首
+        if (index === listLength) index = 0 // 最后一首退回到第一首
+        if (!playing.value) store.commit('setPlayingState', true) // 切换下一首自动播放
+        store.commit('setCurrentIndex', index)
       }
-
-      function loop() {
+      function loopSong() { // 循环播放
         const audioEl = audioRef.value
-        audioEl.currentTime = 0
         audioEl.play()
         store.commit('setPlayingState', true)
       }
-
       function ready() {
-        if (songReady.value) {
-          return
-        }
-        songReady.value = true
-        playLyric()
-        savePlay(currentSong.value)
+        if (songReady.value) return // 歌曲已经缓存好了
+        songReady.value = true // 设置歌曲缓存为true
+        playLyric() // 执行播放
+        savePlay(currentSong.value) // 歌曲记录到播放历史
       }
-
       function error() {
         songReady.value = true
       }
-
-      function updateTime(e) {
+      function updateTime(e) { // 更新currentTime
         if (!progressChanging) {
           currentTime.value = e.target.currentTime
         }
       }
-
-      function onProgressChanging(progress) {
-        progressChanging = true
+      function onProgressChanging(progress) { // 拖动进度条
+        progressChanging = true // 设置优先级高于update
         currentTime.value = currentSong.value.duration * progress
-        playLyric()
+        playLyric() // 进度条随着进度位置改变
         stopLyric()
       }
-
-      function onProgressChanged(progress) {
+      function onProgressChanged(progress) { // 进度条位置改变
         progressChanging = false
-        audioRef.value.currentTime = currentTime.value = currentSong.value.duration * progress
-        if (!playing.value) {
-          store.commit('setPlayingState', true)
-        }
+        audioRef.value.currentTime = currentTime.value = currentSong.value.duration * progress // 改变进度
         playLyric()
       }
-
-      function end() {
-        currentTime.value = 0
+      function songEnd() {
+        const playMode = computed(() => store.state.playMode) // 播放模式
         if (playMode.value === PLAY_MODE.loop) {
-          loop()
+          loopSong()
         } else {
-          next()
+          nextSong()
         }
       }
-
       return {
-        audioRef,
-        barRef,
-        fullScreen,
-        currentTime,
-        currentSong,
-        playlist,
-        playIcon,
-        disableCls,
-        progress,
-        goBack,
-        togglePlay,
-        pause,
-        prev,
-        next,
-        ready,
-        error,
-        updateTime,
-        formatTime,
-        onProgressChanging,
-        onProgressChanged,
-        end,
-        // mode
-        modeIcon,
-        changeMode,
-        // favorite
-        getFavoriteIcon,
-        toggleFavorite,
-        // cd
-        cdCls,
-        cdRef,
-        cdImageRef,
-        // lyric
-        currentLyric,
-        currentLineNum,
-        pureMusicLyric,
-        playingLyric,
-        lyricScrollRef,
-        lyricListRef,
         // middle-interactive
         currentShow,
         middleLStyle,
@@ -377,12 +296,56 @@
         onMiddleTouchStart,
         onMiddleTouchMove,
         onMiddleTouchEnd,
-        // animation
+        // hooks-lyric-data
+        currentLyric,
+        currentLineNum,
+        pureMusicLyric,
+        playingLyric,
+        lyricScrollRef,
+        lyricListRef,
+        // hooks-mode-data
+        modeIcon,
+        // hooks-mode-methods
+        changeMode,
+        // hooks-favorite-methods
+        getFavoriteIcon,
+        toggleFavorite,
+        // hooks-cd-data
+        cdCls,
+        cdRef,
+        cdImageRef,
+        // hooks-animation
         cdWrapperRef,
         enter,
         afterEnter,
         leave,
-        afterLeave
+        afterLeave,
+        // data
+        audioRef,
+        songReady,
+        currentTime,
+        playlist,
+        progressBarRef,
+        // computed
+        fullScreen,
+        currentSong,
+        playing,
+        playIcon,
+        disableCls,
+        progress,
+        // methods
+        goBack,
+        togglePlay,
+        pause,
+        prevSong,
+        nextSong,
+        ready,
+        error,
+        updateTime,
+        formatTime,
+        onProgressChanging,
+        onProgressChanged,
+        songEnd
       }
     }
   }
@@ -407,7 +370,6 @@
         z-index: -1;
         opacity: 0.6;
         filter: blur(20px);
-
         img {
           width: 100%;
           height: 100%;
@@ -487,7 +449,7 @@
           }
           .playing-lyric-wrapper {
             width: 80%;
-            margin: 30px auto 0 auto;
+            margin: 50px auto 0 auto;
             overflow: hidden;
             text-align: center;
             .playing-lyric {

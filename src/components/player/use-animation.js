@@ -67,11 +67,11 @@ export default function useAnimation() {
   }
 
   function getPosAndScale() {
-    const targetWidth = 40
-    const paddingLeft = 40
-    const paddingBottom = 30
-    const paddingTop = 80
-    const width = window.innerWidth * 0.8
+    const targetWidth = 40 // mini播放器宽度
+    const paddingLeft = 40 // 播放器的cd位置
+    const paddingBottom = 30 // 播放器的cd位置
+    const paddingTop = 80 // 播放器的cd位置
+    const width = window.innerWidth * 0.8 // 播放器的宽度
     const x = -(window.innerWidth / 2 - paddingLeft)
     const y = window.innerHeight - paddingTop - width / 2 - paddingBottom
     const scale = targetWidth / width

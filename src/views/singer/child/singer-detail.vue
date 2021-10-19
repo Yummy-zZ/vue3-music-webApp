@@ -1,25 +1,19 @@
 <template>
   <div class="singer-detail">
-    <h1>歌手详情页</h1>
+    <detail-list :title="title"
+                :pic="pic"
+                :songs="songs"
+                :loading="loading"
+    ></detail-list>
   </div>
 </template>
 
 <script>
 import { getSingerDetail } from '@/service/singer'
-import { processSongs } from '@/service/song'
+import { SINGER_KEY } from '@/assets/js/constant' // sessionStorage存储singer对象
+import createDetailComponent from '@/assets/js/create-detail-component' // 逻辑封装
 
-export default {
-  name: 'singerDetail',
-  props: {
-    singer: Object
-  },
-  async created () {
-    const detail = await getSingerDetail(this.singer)
-    const songs = await processSongs(detail.songs)
-    console.log(detail)
-    console.log(songs)
-  }
-}
+export default createDetailComponent('singer-detail', SINGER_KEY, getSingerDetail)
 </script>
 
 <style lang="scss" scoped>

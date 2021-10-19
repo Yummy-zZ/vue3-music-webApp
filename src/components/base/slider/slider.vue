@@ -1,23 +1,22 @@
 <template>
   <div class="slider" ref="rootRef">
     <div class="slider-group">
-      <div
-        class="slider-page"
-        v-for="item in sliders"
-        :key="item.id"
+      <div v-for="item in sliders"
+           class="slider-page"
+           :key="item.id"
       >
         <a :href="item.link">
-          <img :src="item.pic"/>
+          <img :src="item.pic" :alt="item.link">
         </a>
       </div>
     </div>
     <div class="dots-wrapper">
-      <span
-        class="dot"
-        v-for="(item, index) in sliders"
-        :key="item.id"
-        :class="{'active': currentPageIndex === index}">
-      </span>
+          <span
+            class="dot"
+            v-for="(item, index) in sliders"
+            :key="item.id"
+            :class="{'active': currentPageIndex === index}">
+          </span>
     </div>
   </div>
 </template>
@@ -52,19 +51,15 @@
   .slider {
     min-height: 1px;
     font-size: 0;
-    touch-action: pan-y;
+    touch-action: pan-y; // 单手指垂直移动
     .slider-group {
       position: relative;
       overflow: hidden;
       white-space: nowrap;
       .slider-page {
         display: inline-block;
-        transform: translate3d(0, 0, 0);
-        backface-visibility: hidden;
-        a {
-          display: block;
-          width: 100%;
-        }
+        //transform: translate3d(0, 0, 0);
+        //backface-visibility: hidden;
         img {
           display: block;
           width: 100%;
@@ -87,7 +82,7 @@
         &.active {
           width: 20px;
           border-radius: 5px;
-          backgroud: $color-text-ll;
+          background: $color-text-ll;
         }
       }
     }

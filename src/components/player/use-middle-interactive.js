@@ -1,9 +1,9 @@
 import { ref } from 'vue'
 
 export default function useMiddleInteractive() {
-  const currentShow = ref('cd')
-  const middleLStyle = ref(null)
-  const middleRStyle = ref(null)
+  const currentShow = ref('cd') // 底部栏点的位置
+  const middleLStyle = ref(null) // 左边cd样式
+  const middleRStyle = ref(null) // 右边歌词样式
 
   const touch = {}
   let currentView = 'cd'

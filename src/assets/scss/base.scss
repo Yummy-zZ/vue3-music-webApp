@@ -1,8 +1,9 @@
 body, html {
   line-height: 1;
-  font-family: 'PingFang SC', 'STHeitiSC-Light', 'Helvetica-Light', arial, sans-serif, 'Droid Sans Fallback';
-  user-select: none;
-  -webkit-tap-highlight-color: transparent;
+  font-family: 'PingFang SC', 'STHeitiSC-Light', 'Helvetica-Light',
+  arial, sans-serif, 'Droid Sans Fallback'; // 字体族(带引号)和通用字体
+  user-select: none; // 用户不能选择文本
+  -webkit-tap-highlight-color: transparent; // 链接高亮
   background: $color-background;
   color: $color-text;
 }
@@ -10,9 +11,9 @@ body, html {
 .g-relative {
   position: relative;
 }
-
+// 窗口之间的滑动动画
 .slide-enter-active, .slide-leave-active {
-  transition: all 0.3s
+  transition: all .3s
 }
 
 .slide-enter-from, .slide-leave-to {
