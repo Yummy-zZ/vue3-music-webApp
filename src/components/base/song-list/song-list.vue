@@ -46,7 +46,7 @@
       },
       getRankText(index) {
         if (index > 2) {
-          return index++
+          return ++index
         }
       }
     }

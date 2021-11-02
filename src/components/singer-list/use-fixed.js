@@ -2,7 +2,7 @@ import { nextTick, ref, watch, computed } from 'vue'
 
 export default function useFixed(props) {
   const TITLE_HEIGHT = 30 // fixed顶部栏的高度
-  const groupRef = ref(null) // 所有歌手group的ref,group === 所有list
+  const groupRef = ref(null) // 歌手data的ref
   const listHeights = ref([]) // list的高度的数组
   const scrollY = ref(0) // 滚动的位置
   const currentIndex = ref(0) // 目前滚动时的list索引值
@@ -11,9 +11,9 @@ export default function useFixed(props) {
   // 监听group是否已经挂载,并使用calculate计算每个List高度
   watch(() => props.data,
     async () => {
-    await nextTick() // 等到dom挂载后再执行calculate
-    calculate() // 计算每个group高度,放到listHeights数组里
-  })
+      await nextTick() // 等到dom挂载后再执行calculate
+      calculate() // 计算每个group高度,放到listHeights数组里
+    })
   // 监听滚动时Y的位置
   watch(scrollY, async (newY) => {
     const listHeightsVal = listHeights.value
@@ -22,7 +22,7 @@ export default function useFixed(props) {
       const heightBottom = listHeightsVal[i + 1] // list下部高度
       if (newY >= heightTop && newY <= heightBottom) { // 如果此时滚动位置在某个list之间
         currentIndex.value = i // 获取索引值
-        distance.value = heightBottom - newY
+        distance.value = heightBottom - newY // 当前List底部距离顶部的距离
       }
     }
   })

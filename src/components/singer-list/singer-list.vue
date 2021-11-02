@@ -53,7 +53,6 @@
         </li>
       </ul>
     </div>
-
   </scroll>
 </template>
 
@@ -137,6 +136,7 @@ export default {
     .fixed {
       position: absolute;
       top: 0;
+      right: 0;
       left: 0;
       width: 100%;
       .fixed-title {

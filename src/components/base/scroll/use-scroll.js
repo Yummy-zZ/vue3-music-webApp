@@ -7,7 +7,7 @@ export function useScroll(rootRef, options, emit) {
   const scroll = ref(null)
   onMounted(() => {
     const scrollVal = scroll.value = new BScroll(rootRef.value, {
-      observeDOM: true,
+      observeDOM: true, // Dom改变时会触发refresh
       ...options
     })
     if (options.probeType > 0) { // 1|2|3 越大监听效果越明显

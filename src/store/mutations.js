@@ -17,10 +17,10 @@ export const mutations = {
   setFullScreen(state, fullScreen) { // 修改是否满屏
     state.fullScreen = fullScreen
   },
-  setFavoriteList(state, list) {
+  setFavoriteList(state, list) { // 修改喜欢列表
     state.favoriteList = list
   },
-  addSongLyric(state, { song, lyric }) {
+  addSongLyric(state, { song, lyric }) { // 添加歌词
     state.playlist.map(item => {
       if (song.mid === item.mid) {
         item.lyric = lyric
@@ -28,7 +28,7 @@ export const mutations = {
       return item
     })
   },
-  setPlayHistory(state, songs) {
+  setPlayHistory(state, songs) { // 添加历史播放列表
     state.playHistory = songs
   }
 }

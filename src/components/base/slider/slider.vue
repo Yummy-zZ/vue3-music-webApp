@@ -58,8 +58,8 @@
       white-space: nowrap;
       .slider-page {
         display: inline-block;
-        //transform: translate3d(0, 0, 0);
-        //backface-visibility: hidden;
+        transform: translate3d(0, 0, 0);
+        backface-visibility: hidden;
         img {
           display: block;
           width: 100%;

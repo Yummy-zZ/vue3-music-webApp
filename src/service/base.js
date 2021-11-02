@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const ERR_OK = 0
-const baseURL = process.env.NODE_ENV === 'production' ? 'http://49.235.247.206:8080/' : '/'
+const baseURL = process.env.NODE_ENV === 'production' ? 'http://120.25.222.227:8080/' : '/'
 axios.defaults.baseURL = baseURL
 
 export function get(url, params) {

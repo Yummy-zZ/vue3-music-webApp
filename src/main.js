@@ -12,6 +12,7 @@ import { FAVORITE_KEY, PLAYED_KEY } from './assets/js/constant'
 
 const app = createApp(App)
 
+// 页面载入时就对localStorage里的数据更新
 const favoriteSongs = load(FAVORITE_KEY)
 if (favoriteSongs.length > 0) {
   processSongs(favoriteSongs).then((songs) => {
@@ -20,6 +21,7 @@ if (favoriteSongs.length > 0) {
   })
 }
 
+// 页面载入时就对localStorage里的数据更新
 const historySongs = load(PLAYED_KEY)
 if (historySongs.length > 0) {
   processSongs(historySongs).then((songs) => {

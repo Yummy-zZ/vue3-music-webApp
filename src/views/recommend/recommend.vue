@@ -16,7 +16,6 @@
     <router-view v-slot="{ Component }">
       <transition appear name="slide">
         <component :is="Component"
-                   @selectedAlbum="selected"
                    :data="selectedAlbum"
         />
       </transition>

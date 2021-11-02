@@ -18,7 +18,7 @@
           >
         </div>
       </div>
-<!--      歌曲切换-->
+<!--      歌曲轮播图切换-->
       <div ref="sliderWrapperRef"
            class="slider-wrapper"
       >
@@ -91,7 +91,7 @@ export default {
     const miniPlayIcon = computed(() => playing.value ? 'icon-pause' : 'icon-play') // 计算暂停和播放按钮的样式
     // hooks
     const { cdRef, cdCls, cdImageRef } = useCd() // 复用player的轮子
-    const { slider, sliderWrapperRef } = useMiniSlider() // 迷你播放器逻辑
+    const { slider, sliderWrapperRef } = useMiniSlider() // 迷你播放器切轮播图换歌曲逻辑
     // methods
     function showNormalPlayer() {
       store.commit('setFullScreen', true)
